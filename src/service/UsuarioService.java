@@ -1,5 +1,6 @@
 package service;
 
+import model.Administrador;
 import model.Usuario;
 import repository.UsuarioRepository;
 import java.util.List;
@@ -23,8 +24,15 @@ public class UsuarioService {
         repository.remover(id);
     }
 
-public Usuario buscarUsuario(Long id) {
-    return repository.buscarPorId(id);
-}
+    public Usuario buscarUsuario(Long id) {
+        return repository.buscarPorId(id);
+    }
+
+    public void criarAdmin(String nome, String email, String setor) {
+        // Criei um Administrador, mas o repositório o trata como Usuario (Polimorfismo)
+        Administrador adm = new Administrador(null, nome, email, setor);
+        repository.salvar(adm);
+    }
 
 }
+
