@@ -1,18 +1,24 @@
 package model;
 
-// O 'extends' indica que Administrador HERDA de Usuario
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "administradores")
 public class Administrador extends Usuario {
+
     private String setor;
 
+    // Construtor vazio obrigatório pelo JPA
+    public Administrador() {}
+
     public Administrador(Long id, String nome, String email, String setor) {
-        // O 'super' chama o construtor da classe pai (Usuario)
         super(id, nome, email);
         this.setor = setor;
     }
 
-    public void gerenciarSistema() {
-        System.out.println("Admin " + getNome() + " está acessando o painel de controle.");
-    }
-
     public String getSetor() { return setor; }
+    public void setSetor(String setor) { this.setor = setor; }
 }
+
+
+
