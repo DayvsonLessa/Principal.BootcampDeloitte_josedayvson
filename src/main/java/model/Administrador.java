@@ -8,7 +8,7 @@ public class Administrador extends Usuario {
 
     private String setor;
 
-    // Construtor vazio obrigatório pelo JPA
+
     public Administrador() {}
 
     public Administrador(Long id, String nome, String email, String setor) {

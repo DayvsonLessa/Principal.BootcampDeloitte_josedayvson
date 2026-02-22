@@ -1,23 +1,23 @@
 package model;
 
-import jakarta.persistence.*; // Importações do JPA
+import jakarta.persistence.*;
 
-@Entity // Diz que esta classe é uma tabela no banco
+@Entity
 @Table(name = "usuarios")
-@Inheritance(strategy = InheritanceType.JOINED) // Estratégia de Herança
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
 
-    @Id // Define como Chave Primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false) // Nome não pode ser vazio
+    @Column(nullable = false)
     private String nome;
 
-    @Column(unique = true, nullable = false) // Email único e obrigatório
+    @Column(unique = true, nullable = false)
     private String email;
 
-    // Construtor vazio obrigatório pelo JPA
+
     public Usuario() {}
 
     public Usuario(Long id, String nome, String email) {
@@ -26,7 +26,7 @@ public class Usuario {
         this.email = email;
     }
 
-    // Getters e Setters (Mantenha os que você já tem)
+    // Getters e Setters
     public Long getId() { return id; }
     public String getNome() { return nome; }
     public String getEmail() { return email; }

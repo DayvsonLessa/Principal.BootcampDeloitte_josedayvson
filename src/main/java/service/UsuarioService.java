@@ -3,16 +3,20 @@ package service;
 import model.Usuario;
 import model.Administrador;
 import repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+@Service
 public class UsuarioService {
-    private UsuarioRepository repository = new UsuarioRepository();
+
+    @Autowired
+    private UsuarioRepository repository;
 
     public void criarUsuario(String nome, String email) {
         Usuario novo = new Usuario(null, nome, email);
         repository.salvar(novo);
     }
-
 
     public void salvarAdmin(Administrador admin) {
         repository.salvar(admin);
@@ -39,4 +43,3 @@ public class UsuarioService {
         repository.excluir(id);
     }
 }
-

@@ -1,66 +1,41 @@
 package repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 import model.Usuario;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
+@Repository
 public class UsuarioRepository {
-    // O nome "meu-pu" deve ser o mesmo que você colocou no persistence.xml
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("meu-pu");
 
+    @PersistenceContext
+    private EntityManager em;
+
+    @Transactional
     public void salvar(Usuario usuario) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(usuario); // O JPA faz o INSERT automático aqui!
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
+        em.persist(usuario);
     }
 
     public List<Usuario> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        // JPQL: Uma linguagem de consulta parecida com SQL, mas focada em Objetos
-        List<Usuario> usuarios = em.createQuery("FROM Usuario", Usuario.class).getResultList();
-        em.close();
-        return usuarios;
+        return em.createQuery("FROM Usuario", Usuario.class).getResultList();
     }
 
     public Usuario buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
-        Usuario u = em.find(Usuario.class, id); // O JPA faz o SELECT * FROM ... WHERE ID = ?
-        em.close();
-        return u;
+        return em.find(Usuario.class, id);
     }
 
+    @Transactional
     public void atualizar(Usuario usuario) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(usuario); // O JPA faz o UPDATE automático!
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
+        em.merge(usuario);
     }
 
+    @Transactional
     public void excluir(Long id) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            Usuario u = em.find(Usuario.class, id);
-            if (u != null) {
-                em.remove(u); // O JPA faz o DELETE!
-            }
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+        Usuario u = em.find(Usuario.class, id);
+        if (u != null) {
+            em.remove(u);
         }
     }
 }
