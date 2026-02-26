@@ -12,7 +12,7 @@ import service.UsuarioService;
 import java.util.Scanner;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"service", "repository", "com.deloitte"})
+@ComponentScan(basePackages = {"service", "repository", "com.deloitte", "controller"})
 @EntityScan(basePackages = {"model"})
 public class BootcampApplication implements CommandLineRunner {
 
@@ -20,7 +20,7 @@ public class BootcampApplication implements CommandLineRunner {
     private UsuarioService service;
 
     public static void main(String[] args) {
-        // Isso garante que o Spring Boot rode como uma aplicação de console, sem tentar abrir um site
+        SpringApplication.run(BootcampApplication.class, args);
         SpringApplication app = new SpringApplication(BootcampApplication.class);
         app.setWebApplicationType(org.springframework.boot.WebApplicationType.NONE);
         app.run(args);

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário - Deloitte</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --deloitte-green: #86BC25;
+            --deloitte-blue: #00205B;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--deloitte-blue) !important;
+            border-bottom: 4px solid var(--deloitte-green);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 80px auto;
+        }
+
+        .card-header {
+            background-color: var(--deloitte-green) !important;
+            color: white !important;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--deloitte-blue);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            border-color: var(--deloitte-green);
+            box-shadow: 0 0 0 0.25 rgba(134, 188, 37, 0.25);
+        }
+
+        .btn-save {
+            background-color: var(--deloitte-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: #00153d;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 25px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--deloitte-green);
+            border-color: var(--deloitte-green);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/usuarios">
+            <i class="fa-solid fa-layer-group me-2"></i>Deloitte <span style="color: var(--deloitte-green);">Portal</span>
+        </a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            <h3 class="mb-0">
+                <i class="fa-solid fa-user-pen me-2"></i>
+                <span th:text="${usuario.id != null ? 'Editar Registro' : 'Novo Cadastro'}"></span>
+            </h3>
+        </div>
+        <div class="card-body p-4">
+
+            <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                <span th:text="${mensagemErro}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/usuarios/salvar}" method="post">
+                <input type="hidden" name="id" th:value="${usuario.id}">
+
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome Completo</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-user text-muted"></i></span>
+                        <input type="text" class="form-control" id="nome" name="nome" th:value="${usuario.nome}" required placeholder="Ex: José Silva">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail Corporativo</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-envelope text-muted"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" required placeholder="email@deloitte.com">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="ehAdmin" name="ehAdmin"
+                               onchange="toggleSetor()" th:checked="${usuario instanceof T(model.Administrador)}">
+                        <label class="form-check-label fw-bold" for="ehAdmin">
+                            Definir como Administrador <i class="fa-solid fa-shield-halved ms-1 text-primary"></i>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="campoSetor" class="mb-4" style="display: none;">
+                    <label for="setor" class="form-label">Setor / Departamento</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-building text-muted"></i></span>
+                        <input type="text" class="form-control" id="setor" name="setor" placeholder="Ex: TI, RH, Auditoria"
+                               th:value="${usuario instanceof T(model.Administrador) ? usuario.setor : ''}">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-5">
+                    <a href="/usuarios" class="btn btn-back text-decoration-none">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Voltar
+                    </a>
+                    <button type="submit" class="btn btn-save fw-bold">
+                        <i class="fa-solid fa-check me-2"></i>Salvar Usuário
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSetor() {
+        const checkbox = document.getElementById('ehAdmin');
+        const campoSetor = document.getElementById('campoSetor');
+        campoSetor.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    window.onload = toggleSetor;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

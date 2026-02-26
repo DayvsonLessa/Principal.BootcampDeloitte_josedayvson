@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão - Deloitte</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --deloitte-green: #86BC25;
+            --deloitte-blue: #00205B;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--deloitte-blue) !important;
+            border-bottom: 4px solid var(--deloitte-green);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            background-color: white !important;
+            color: var(--deloitte-blue) !important;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+        }
+
+        .badge-adm {
+            background-color: #e74c3c;
+            border-radius: 20px;
+            padding: 5px 10px;
+        }
+
+        .badge-user {
+            background-color: #95a5a6;
+            border-radius: 20px;
+            padding: 5px 10px;
+        }
+
+        .text-setor {
+            font-style: italic;
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .btn-success {
+            background-color: var(--deloitte-green);
+            border: none;
+        }
+    </style>
+</head>
+<body class="container py-4">
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm mb-5">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/usuarios">
+            <i class="fa-solid fa-layer-group me-2"></i>Deloitte <span style="color: var(--deloitte-green);">Portal</span>
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link btn btn-outline-light btn-sm px-3" href="/sair" onclick="return confirm('Deseja realmente sair?')">
+                Sair <i class="fa-solid fa-right-from-bracket ms-1"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div style="margin-top: 80px;">
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i> <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card">
+        <div class="card-header py-3">
+            <h4 class="mb-0"><i class="fa-solid fa-users-gear me-2"></i>Gestão de Acessos</h4>
+        </div>
+        <div class="card-body p-4">
+
+            <form action="/usuarios/buscar" method="get" class="row g-2 mb-4">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="number" name="id" class="form-control border-start-0" placeholder="Buscar por ID..." required>
+                        <button type="submit" class="btn btn-dark px-4">Buscar</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="d-grid mb-3">
+                <button class="btn btn-light border fw-semibold text-secondary py-2" type="button" data-bs-toggle="collapse" data-bs-target="#tabelaUsuarios">
+                    <i class="fa-solid fa-list-ul me-2"></i> Exibir Base de Dados Completa
+                </button>
+            </div>
+
+            <div class="collapse" id="tabelaUsuarios">
+                <div class="table-responsive rounded-3 border">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Nível / Setor</th> <th class="text-center">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="u : ${lista}">
+                            <td class="ps-3 fw-bold" th:text="${u.id}"></td>
+                            <td th:text="${u.nome}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td>
+                                <div th:if="${u instanceof T(model.Administrador)}">
+                                    <span class="badge badge-adm">
+                                        <i class="fa-solid fa-shield-halved me-1"></i> ADM
+                                    </span>
+                                    <span class="text-setor ms-2" th:text="'(' + ${u.setor} + ')'"></span>
+                                </div>
+
+                                <div th:unless="${u instanceof T(model.Administrador)}">
+                                    <span class="badge badge-user">
+                                        <i class="fa-solid fa-user me-1"></i> Usuário
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a th:href="@{/usuarios/editar/{id}(id=${u.id})}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a th:href="@{/usuarios/excluir/{id}(id=${u.id})}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Excluir este registro?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="/usuarios/novo" class="btn btn-success px-4 py-2 fw-bold text-white">
+                    <i class="fa-solid fa-plus me-2"></i>Adicionar novo registro
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

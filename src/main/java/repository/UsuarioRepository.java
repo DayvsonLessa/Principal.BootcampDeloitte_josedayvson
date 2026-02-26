@@ -15,7 +15,12 @@ public class UsuarioRepository {
 
     @Transactional
     public void salvar(Usuario usuario) {
-        em.persist(usuario);
+        // Se o ID for nulo, ele cria um novo. Se já tiver ID, ele sincroniza.
+        if (usuario.getId() == null) {
+            em.persist(usuario);
+        } else {
+            em.merge(usuario);
+        }
     }
 
     public List<Usuario> listarTodos() {
@@ -28,6 +33,7 @@ public class UsuarioRepository {
 
     @Transactional
     public void atualizar(Usuario usuario) {
+        // O merge é o comando correto para ATUALIZAR sem excluir nada
         em.merge(usuario);
     }
 
