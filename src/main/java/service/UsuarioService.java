@@ -85,5 +85,6 @@ public class UsuarioService {
     }
 
     public void atualizarUsuarioCompleto(Long id, String nome, String email, String setor) {
+        
     }
 }
